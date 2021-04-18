@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ui/choosetimedialog.h"
+#include "ui/loginscreendialog.h"
+#include "auth.h"
+
 
 
 
@@ -9,9 +12,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , atimelogger(new AtimeloggerAPI)
 {
     ui->setupUi(this);
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("C:/QtMyProject/data/atimelogger.db");
     connect(ui->actionSycn, &QAction::triggered, this, &MainWindow::sync);
 
 }
@@ -23,13 +27,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::sync()
 {
-    //    选择需要同步的时间段
-    ChooseTimeDialog choosetimedialog;
-    if(choosetimedialog.exec())
-    {
-        atimelogger->work(choosetimedialog.from(), choosetimedialog.to());
-    }
-
+    requester.write(db);
+//    networkManager.get();
 }
 
 

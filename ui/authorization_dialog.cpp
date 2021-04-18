@@ -1,34 +1,35 @@
-#include "loginscreendialog.h"
-#include "ui_loginscreendialog.h"
-#include <QMessageBox>
-LoginScreenDialog::LoginScreenDialog(QWidget *parent) :
+#include "authorization_dialog.h"
+#include "ui_authorization_dialog.h"
+
+AuthorizationDialog::AuthorizationDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::LoginScreenDialog)
+    ui(new Ui::AuthorizationDialog)
 {
     ui->setupUi(this);
 }
 
-LoginScreenDialog::~LoginScreenDialog()
+AuthorizationDialog::~AuthorizationDialog()
 {
     delete ui;
 }
 
-QString LoginScreenDialog::get_account()
+
+QString AuthorizationDialog::get_account()
 {
-    return ui->accountLineEdit->text();
+    return ui->account_lineEdit->text();
 }
 
-QString LoginScreenDialog::get_password()
+QString AuthorizationDialog::get_password()
 {
-    return ui->passwordLlineEdit->text();
+    return ui->password_lineEdit->text();
 }
 
-void LoginScreenDialog::accept()
+void AuthorizationDialog::accept()
 {
-    if(get_account().isEmpty()){
+    if(get_account().isEmpty())
+    {
         QMessageBox::warning(this, "错误", "请输入您的atimelogger账号。\n通常是您的邮箱。");
         return;
-
     }
     if (get_password().isEmpty())
     {
@@ -41,3 +42,5 @@ void LoginScreenDialog::accept()
         return QDialog::accept();
     }
 }
+
+

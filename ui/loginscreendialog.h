@@ -14,6 +14,11 @@ class LoginScreenDialog : public QDialog
 public:
     explicit LoginScreenDialog(QWidget *parent = nullptr);
     ~LoginScreenDialog();
+    QString get_account();
+    QString get_password();
+
+public slots:
+    void accept() override;
 
 private:
     Ui::LoginScreenDialog *ui;

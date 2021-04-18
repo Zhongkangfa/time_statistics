@@ -2,7 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "infrastructure/atimeloggerapi.h"
+#include <QSqlDatabase>
+#include <QNetworkAccessManager>
+#include "atimeloggerrequest.h"
+#include "recordrequester.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,11 +21,18 @@ public:
 
 private:
     Ui::MainWindow *ui;
+//    超级重要的基础
+    QNetworkAccessManager networkManager;
+    QSqlDatabase db;
+    QString username;
+    QString password;
+    QByteArray authorization;
+    RecordRequester requester;
 
 private:
     void sync();
     //core
 private:
-    AtimeloggerAPI *atimelogger;
+
 };
 #endif // MAINWINDOW_H

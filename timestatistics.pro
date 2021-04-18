@@ -9,17 +9,19 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    infrastructure/atimeloggerapi.cpp \
-    infrastructure/timerecords.cpp \
+    atimeloggerrequest.cpp \
+    auth.cpp \
     main.cpp \
     mainwindow.cpp \
+    recordrequester.cpp \
     ui/choosetimedialog.cpp \
     ui/loginscreendialog.cpp
 
 HEADERS += \
-    infrastructure/atimeloggerapi.h \
-    infrastructure/timerecords.h \
+    atimeloggerrequest.h \
+    auth.h \
     mainwindow.h \
+    recordrequester.h \
     ui/choosetimedialog.h \
     ui/loginscreendialog.h
 
