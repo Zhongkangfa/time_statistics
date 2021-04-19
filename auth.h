@@ -9,12 +9,13 @@ class Auth
 public:
     Auth();
 
-    QString m_username;
-    QByteArray m_authorization;
+    QString username;
+    QByteArray authorization;
 
     QByteArray getAuthorization(QSqlDatabase &db);
-    bool save(QString &username, QByteArray &authorization, QSqlDatabase &db);
+    bool save(QSqlDatabase &db);
     QString getUsername() const;
+    void createAuthorization(QString username, QString password);
 };
 
 #endif // AUTH_H

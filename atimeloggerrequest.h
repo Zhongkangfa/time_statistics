@@ -7,19 +7,15 @@ class AtimeloggerRequest: public QNetworkRequest
 {
 public:
     AtimeloggerRequest();
-    AtimeloggerRequest(QString username, QString password);
-    AtimeloggerRequest(QString username, QString password, uint from, uint to);
-    AtimeloggerRequest(QString username, QByteArray authorization, uint from, uint to);
+    AtimeloggerRequest(QString username, QByteArray authorization, uint from=0, uint to=0);
 private:
-    QString m_username;
-    QString m_password;
-    uint m_from;
-    uint m_to;
-    QUrlQuery m_query;
-    QUrl types_url;
-    QUrl intervals_url;
+    QString username;
+    QString password;
+    uint from;
+    uint to;
+    QUrlQuery query;
+    QByteArray authorization;
     void addQueryItems();
-    QByteArray getAuthorization();
 };
 
 #endif // ATIMELOGGERREQUEST_H

@@ -1,5 +1,6 @@
 #include "auth.h"
 #include <QSqlQuery>
+#include "ui/loginscreendialog.h"
 
 Auth::Auth()
 {
@@ -8,37 +9,63 @@ Auth::Auth()
 
 QString Auth::getUsername() const
 {
-    return m_username;
+    return username;
+}
+
+void Auth::createAuthorization(QString username, QString password)
+{
+    QString authorization_string = username + QString(":") + password;
+    QByteArray Base64_authorization = authorization_string .toLocal8Bit().toBase64();
+    authorization = QString("Basic " + Base64_authorization ).toLocal8Bit();
 }
 
 
 QByteArray Auth::getAuthorization(QSqlDatabase &db)
 {
     if(db.open()){
-        QSqlQuery authorizationQuery("SELECT [value] FROM authorization WHERE type='authorization'", db);
-        QSqlQuery accountQuery("SELECT [value] FROM authorization WHERE type='account'", db);
-        bool ok = authorizationQuery.isNull(0) || accountQuery.isNull(0);
-        if(!ok)
+        qDebug() << "数据库打开了！";
+        qDebug() << db.tables();
+        QSqlQuery query("SELECT * FROM authorization", db);
+        query.first();
+
+        //如果查询不是活动的，查询没有定位在有效的记录上，没有这样的字段，或者字段为空，返回true;
+        if(query.isValid())
         {
-            authorizationQuery.first();
-            accountQuery.first();
-            m_username = accountQuery.value(0).toString();
-            m_authorization = authorizationQuery.value(0).toByteArray();
+            qDebug() << "我进来了？";
+            if(query.value(0).toString() == "account")
+            {
+                username = query.value(1).toString();
+                query.next();
+                authorization = query.value(1).toByteArray();
+            }else{
+                authorization = query.value(1).toByteArray();
+                query.next();
+                username = query.value(1).toString();
+            }
+            qDebug() << username;
+            qDebug() << authorization;
         }
-        authorizationQuery.clear();
-        accountQuery.clear();
+        query.clear();
         db.close();  //关闭数据库连接，释放获得的任何资源，并使数据库中使用的任何现有QSqlQuery对象无效。
+        if(authorization.isEmpty()){
+            LoginScreenDialog dialog;
+            if(dialog.exec()){
+                //获取账号和密码
+                createAuthorization(dialog.get_account(), dialog.get_password());
+            }
+
+        }
     }
     else
     {
         qDebug() << "数据库无法打开，数据获取失败。";
-        m_username = "";
-        m_authorization = QByteArray();
+        username = "";
+        authorization = QByteArray();
     }
-    return m_authorization;
+    return authorization;
 }
 
-bool Auth::save(QString &username, QByteArray &authorization, QSqlDatabase &db)
+bool Auth::save(QSqlDatabase &db)
 {
     if(db.open())
     {
@@ -46,15 +73,14 @@ bool Auth::save(QString &username, QByteArray &authorization, QSqlDatabase &db)
         query.prepare("UPDATE authorization SET value = ? WHERE type = 'authorization'" );
         query.bindValue(0, authorization);
         query.exec();
-
         query.clear();
-
         query.prepare("UPDATE authorization SET value = ? WHERE type = 'account'" );
         query.bindValue(0, username);
         query.exec();
         db.close();
         return true;
     }else{
+        qDebug() << "数据库没打开！";
         return false;
     }
 }

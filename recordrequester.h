@@ -1,6 +1,7 @@
 #ifndef RECORDREQUESTER_H
 #define RECORDREQUESTER_H
 #include "atimeloggerrequest.h"
+#include "auth.h"
 #include <QSqlDatabase>
 
 
@@ -10,17 +11,12 @@ public:
     RecordRequester();
     AtimeloggerRequest write(QSqlDatabase &db);
     AtimeloggerRequest repeat(uint last);
-    bool hasAuthorizationAndUsername();
-    bool askUsernameAndPassword();
-    bool verify();
-    void getAuthorizationAndUsername(QSqlDatabase &db);
-    void ChooseLength();
 private:
     QString username;
-    QString password;
     QByteArray authorization;
     uint from;
     uint to;
+    Auth auth;
 };
 
 #endif // RECORDREQUESTER_H
