@@ -9,12 +9,18 @@ class RecordRequester
 {
 public:
     RecordRequester();
-    AtimeloggerRequest write(QSqlDatabase &db);
+    AtimeloggerRequest write(QSqlDatabase &db, QString type = "intervals");
     AtimeloggerRequest repeat(uint last);
     uint getFrom() const;
 
     uint getTo() const;
     uint getLastRecordTime(QSqlDatabase &db);
+
+    QByteArray getAuthorization() const;
+
+    QString getUsername() const;
+    void saveAuthorization(QSqlDatabase &db);
+    void init();
 
 private:
     QString username;

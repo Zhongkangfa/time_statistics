@@ -16,6 +16,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     recordrequester.cpp \
+    sync.cpp \
     ui/choosetimedialog.cpp \
     ui/loginscreendialog.cpp
 
@@ -26,6 +27,7 @@ HEADERS += \
     localstorage.h \
     mainwindow.h \
     recordrequester.h \
+    sync.h \
     ui/choosetimedialog.h \
     ui/loginscreendialog.h
 

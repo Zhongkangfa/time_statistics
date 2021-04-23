@@ -16,6 +16,7 @@ public:
     bool save(QSqlDatabase &db);
     QString getUsername() const;
     void createAuthorization(QString username, QString password);
+    void init();
 };
 
 #endif // AUTH_H

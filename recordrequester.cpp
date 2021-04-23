@@ -11,18 +11,22 @@ RecordRequester::RecordRequester()
 }
 
 
-AtimeloggerRequest RecordRequester::write(QSqlDatabase &db)
+AtimeloggerRequest RecordRequester::write(QSqlDatabase &db, QString type)
 {
     authorization = auth.getAuthorization(db);
     if(!authorization.isEmpty()){
         username = auth.getUsername();
-        ChooseTimeDialog choosetimedialog;
-        choosetimedialog.setLastDateTime(getLastRecordTime(db));
-        if(choosetimedialog.exec())
-        {
-            from = choosetimedialog.from();
-            to = choosetimedialog.to();
-            return AtimeloggerRequest(username, authorization, from, to);
+        if(type == "types"){
+            return AtimeloggerRequest(username, authorization);
+        }else{
+            ChooseTimeDialog choosetimedialog;
+            choosetimedialog.setLastDateTime(getLastRecordTime(db));
+            if(choosetimedialog.exec())
+            {
+                from = choosetimedialog.from();
+                to = choosetimedialog.to();
+                return AtimeloggerRequest(username, authorization, from, to);
+            }
         }
     }
     return AtimeloggerRequest();
@@ -30,7 +34,7 @@ AtimeloggerRequest RecordRequester::write(QSqlDatabase &db)
 
 AtimeloggerRequest RecordRequester::repeat(uint last)
 {
-    return AtimeloggerRequest(username, authorization, last, to);
+    return AtimeloggerRequest(username, authorization, from, last);
 }
 
 uint RecordRequester::getFrom() const
@@ -45,19 +49,40 @@ uint RecordRequester::getTo() const
 
 uint RecordRequester::getLastRecordTime(QSqlDatabase &db)
 {
+    uint last = QDateTime::fromString("2008", "yyyy").toSecsSinceEpoch();
     if(db.open())
     {
-        QSqlQuery query("SELECT [to] FROM [interval] ORDER BY [to] DESC LIMIT 1", db);
-        query.next();
-        if(query.value(0).isNull())
-        {
-            return QDateTime::fromString("2008", "yyyy").toSecsSinceEpoch();
-        }
-        else
-        {
-            return query.value(0).toDouble();
+        if(db.tables().contains("interval")){
+            QSqlQuery query("SELECT [to] FROM [interval] ORDER BY [to] DESC LIMIT 1", db);
+            query.next();
+            if(!query.value(0).isNull())
+            {
+                last = query.value(0).toDouble();
+            }
         }
         db.close();
     }
-    return QDateTime::fromString("2008", "yyyy").toSecsSinceEpoch();
+    return last;
+}
+
+QByteArray RecordRequester::getAuthorization() const
+{
+    return authorization;
+}
+
+QString RecordRequester::getUsername() const
+{
+    return username;
+}
+
+void RecordRequester::saveAuthorization(QSqlDatabase &db)
+{
+    auth.save(db);
+}
+
+void RecordRequester::init()
+{
+    username.clear();
+    authorization.clear();
+    auth.init();
 }
