@@ -8,6 +8,7 @@ class AtimeloggerRequest: public QNetworkRequest
 public:
     AtimeloggerRequest();
     AtimeloggerRequest(QString username, QByteArray authorization, uint from=0, uint to=0);
+    bool isEmpty();
 private:
     QString username;
     QString password;

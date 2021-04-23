@@ -26,6 +26,11 @@ AtimeloggerRequest::AtimeloggerRequest(QString username, QByteArray authorizatio
     setUrl(url);
 }
 
+bool AtimeloggerRequest::isEmpty()
+{
+    return this->authorization.isEmpty();
+}
+
 void AtimeloggerRequest::addQueryItems()
 {
     query.addQueryItem("from", QString::number(from));

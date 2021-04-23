@@ -6,6 +6,8 @@
 #include <QNetworkAccessManager>
 #include "atimeloggerrequest.h"
 #include "recordrequester.h"
+#include "QNetworkReply"
+#include "QProgressDialog"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,11 +30,22 @@ private:
     QString password;
     QByteArray authorization;
     RecordRequester requester;
+    QNetworkReply * reply;
+    QProgressDialog pd;
+    uint times;
+    QByteArray m_ba;
 
-private:
+private slots:
     void sync();
+    void on_downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void on_finished();
     //core
 private:
+    void dealWhithReply(QNetworkReply *reply);
+    void dealWhithIntervals(QJsonArray intervals);
+    void dealWhithDownloadError(QNetworkReply::NetworkError downloadError, int httpCode);
+    void insertInterval(QJsonArray intervalArray);
+
 
 };
 #endif // MAINWINDOW_H

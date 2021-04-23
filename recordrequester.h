@@ -11,6 +11,11 @@ public:
     RecordRequester();
     AtimeloggerRequest write(QSqlDatabase &db);
     AtimeloggerRequest repeat(uint last);
+    uint getFrom() const;
+
+    uint getTo() const;
+    uint getLastRecordTime(QSqlDatabase &db);
+
 private:
     QString username;
     QByteArray authorization;
